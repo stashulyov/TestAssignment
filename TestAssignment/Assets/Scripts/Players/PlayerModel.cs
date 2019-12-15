@@ -4,6 +4,8 @@ namespace Players
     {
         public float Hp { get; private set; }
         public float Armor { get; private set; }
+        public float Vampirism { get; private set; }
+        public float Damage { get; private set; }
 
         public void SetHp(float hp)
         {
@@ -15,6 +17,16 @@ namespace Players
             Armor = GetCheckedValue(armor);
         }
 
+        public void SetVampirism(float vampirism)
+        {
+            Vampirism = GetCheckedValue(vampirism);
+        }
+
+        public void SetDamage(float damage)
+        {
+            Damage = GetCheckedValue(damage);
+        }
+
         private float GetCheckedValue(float value)
         {
             if (value < 0f)
@@ -23,7 +35,7 @@ namespace Players
             return value;
         }
 
-        public void Damage(float damage)
+        public void Attack(float damage)
         {
             damage *= (1f - 0.01f * Armor);
 
