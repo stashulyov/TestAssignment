@@ -13,7 +13,7 @@ namespace Tests
         {
             var player = new PlayerModel();
 
-            player.SetHp(hp);
+            player.Hp = hp;
 
             Assert.AreEqual(player.Hp, hp, float.Epsilon);
         }
@@ -24,7 +24,7 @@ namespace Tests
             var player = new PlayerModel();
             var hp = -1f;
 
-            player.SetHp(hp);
+            player.Hp = hp;
 
             Assert.AreEqual(player.Hp, 0f);
         }
@@ -35,7 +35,7 @@ namespace Tests
         {
             var player = new PlayerModel();
             var hp = 100f;
-            player.SetHp(hp);
+            player.Hp = hp;
 
             player.Attack(damage);
 
@@ -48,7 +48,7 @@ namespace Tests
             var player = new PlayerModel();
             var hp = 10f;
             var damage = 100f;
-            player.SetHp(hp);
+            player.Hp = hp;
 
             player.Attack(damage);
 
@@ -61,7 +61,7 @@ namespace Tests
             var player = new PlayerModel();
             var hp = 10f;
             var damage = -100f;
-            player.SetHp(hp);
+            player.Hp = hp;
 
             player.Attack(damage);
 
@@ -76,7 +76,7 @@ namespace Tests
         {
             var player = new PlayerModel();
 
-            player.SetArmor(armor);
+            player.Armor = armor;
 
             Assert.AreEqual(player.Armor, armor, float.Epsilon);
         }
@@ -87,7 +87,7 @@ namespace Tests
             var player = new PlayerModel();
             var armor = -1f;
 
-            player.SetArmor(armor);
+            player.Armor = armor;
 
             Assert.AreEqual(player.Armor, 0f);
         }
@@ -99,8 +99,8 @@ namespace Tests
             var hp = 100f;
             var armor = 100f;
             var damage = 50f;
-            player.SetHp(hp);
-            player.SetArmor(armor);
+            player.Hp = hp;
+            player.Armor = armor;
 
             player.Attack(damage);
 
@@ -113,12 +113,23 @@ namespace Tests
         public void Armor_SetSomeArmorAndDamage_HpChangesFromPercents(float hp, float armor, float damage, float expectedHp)
         {
             var player = new PlayerModel();
-            player.SetHp(hp);
-            player.SetArmor(armor);
+            player.Hp = hp;
+            player.Armor = armor;
 
             player.Attack(damage);
 
             Assert.AreEqual(player.Hp, expectedHp, float.Epsilon);
+        }
+
+        [Test]
+        public void Hp_PlusMinusHp_HpDeducted()
+        {
+            var player = new PlayerModel();
+            player.Hp = 10f;
+
+            player.Hp += -5f;
+
+            Assert.AreEqual(player.Hp, 5f, float.Epsilon);
         }
     }
 }

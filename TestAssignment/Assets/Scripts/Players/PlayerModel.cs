@@ -2,29 +2,33 @@ namespace Players
 {
     public class PlayerModel : IPlayerModel
     {
-        public float Hp { get; private set; }
-        public float Armor { get; private set; }
-        public float Vampirism { get; private set; }
-        public float Damage { get; private set; }
+        private float _hp;
+        private float _armor;
+        private float _vampirism;
+        private float _damage;
 
-        public void SetHp(float hp)
+        public float Hp
         {
-            Hp = GetCheckedValue(hp);
+            get => _hp;
+            set => _hp = GetCheckedValue(value);
         }
 
-        public void SetArmor(float armor)
+        public float Armor
         {
-            Armor = GetCheckedValue(armor);
+            get => _armor;
+            set => _armor = GetCheckedValue(value);
         }
 
-        public void SetVampirism(float vampirism)
+        public float Vampirism
         {
-            Vampirism = GetCheckedValue(vampirism);
+            get => _vampirism;
+            set => _vampirism = GetCheckedValue(value);
         }
 
-        public void SetDamage(float damage)
+        public float Damage
         {
-            Damage = GetCheckedValue(damage);
+            get => _damage;
+            set => _damage = GetCheckedValue(value);
         }
 
         private float GetCheckedValue(float value)

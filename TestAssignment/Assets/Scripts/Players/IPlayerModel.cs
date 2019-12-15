@@ -2,16 +2,11 @@ namespace Players
 {
     public interface IPlayerModel
     {
-        float Hp { get; }
-        float Armor { get; }
-        float Vampirism { get; }
-        float Damage { get; }
+        float Hp { get; set; }
+        float Armor { get; set; }
+        float Vampirism { get; set; }
+        float Damage { get; set; }
 
-        void SetHp(float hp);
-        void SetArmor(float armor);
-        void SetVampirism(float vampirism);
-        void SetDamage(float damage);
-        
         void Attack(float damage);
     }
 }
