@@ -1,7 +1,12 @@
+using System;
+using GameData;
+
 namespace Players
 {
     public class PlayerModel : IPlayerModel
     {
+        public event Action<EStatType, float> OnChange;
+
         private float _hp;
         private float _armor;
         private float _vampirism;
@@ -10,25 +15,41 @@ namespace Players
         public float Hp
         {
             get => _hp;
-            set => _hp = GetCheckedValue(value);
+            set
+            {
+                _hp = GetCheckedValue(value);
+                OnChange?.Invoke(EStatType.Hp, _hp);
+            }
         }
 
         public float Armor
         {
             get => _armor;
-            set => _armor = GetCheckedValue(value);
+            set
+            {
+                _armor = GetCheckedValue(value);
+                OnChange?.Invoke(EStatType.Armor, _armor);
+            }
         }
 
         public float Vampirism
         {
             get => _vampirism;
-            set => _vampirism = GetCheckedValue(value);
+            set
+            {
+                _vampirism = GetCheckedValue(value);
+                OnChange?.Invoke(EStatType.Vampirism, _vampirism);
+            }
         }
 
         public float Damage
         {
             get => _damage;
-            set => _damage = GetCheckedValue(value);
+            set
+            {
+                _damage = GetCheckedValue(value);
+                OnChange?.Invoke(EStatType.Damage, _damage);
+            }
         }
 
         private float GetCheckedValue(float value)

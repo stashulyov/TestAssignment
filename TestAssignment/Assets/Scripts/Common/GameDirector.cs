@@ -24,7 +24,6 @@ namespace Common
             };
 
             var hierarchies = _monoBehaviourServiceLocator.UiObjects.Hierarchies;
-
             var transforms = new Transform[hierarchies.Length];
 
             for (int i = 0; i < hierarchies.Length; i++)
