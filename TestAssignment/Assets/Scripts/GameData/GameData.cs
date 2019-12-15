@@ -3,15 +3,15 @@
 namespace GameData
 {
     [Serializable]
-    public class Data
+    public class GameData
     {
-        public GameModel settings;
-        public Stat[] stats;
-        public Buff[] buffs;
+        public GameModelData settings;
+        public StatData[] stats;
+        public BuffData[] buffs;
     }
 
     [Serializable]
-    public class GameModel
+    public class GameModelData
     {
         public int buffCountMin;
         public int buffCountMax;
@@ -19,7 +19,7 @@ namespace GameData
     }
 
     [Serializable]
-    public class Stat
+    public class StatData
     {
         public int id;
         public string title;
@@ -28,18 +28,18 @@ namespace GameData
     }
 
     [Serializable]
-    public class BuffStat
+    public class BuffStatData
     {
         public float value;
         public int statId;
     }
 
     [Serializable]
-    public class Buff
+    public class BuffData
     {
         public string icon;
         public int id;
         public string title;
-        public BuffStat[] stats;
+        public BuffStatData[] stats;
     }
 }
