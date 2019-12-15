@@ -1,8 +1,9 @@
+using Core;
 using UnityEngine;
 
 namespace Common
 {
-    public class GameDirector : IGameDirector
+    public class GameDirector : IGameDirector, IInitializable
     {
         private readonly IPlayerModelBuilder _playerModelBuilder;
         private readonly IUiBuilder _uiBuilder;

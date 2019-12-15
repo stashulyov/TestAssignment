@@ -60,8 +60,6 @@ namespace Common
             _uiBuilder = new UiBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiFactory);
 
             _gameDirector = new GameDirector(_playerModelBuilder, _uiBuilder, _monoBehaviourServiceLocator);
-
-            _gameDirector.Initialize();
         }
     }
 }
