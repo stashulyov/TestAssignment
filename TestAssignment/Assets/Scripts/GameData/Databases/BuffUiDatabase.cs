@@ -5,9 +5,9 @@ namespace GameData
 {
     public class BuffUiDatabase : ADatabase<EBuffType, BuffUi>, IBuffUiDatabase
     {
-        public BuffUiDatabase(BuffData[] buffData, IIconsDatabase iconsDatabase)
+        public BuffUiDatabase(GameDataProvider gameDataProvider, IIconsDatabase iconsDatabase)
         {
-            foreach (var data in buffData)
+            foreach (var data in gameDataProvider.Data.buffs)
             {
                 var type = (EBuffType) data.id;
                 var icon = iconsDatabase.Get(data.icon);

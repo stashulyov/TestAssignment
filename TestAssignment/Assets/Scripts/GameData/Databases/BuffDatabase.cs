@@ -4,9 +4,9 @@ namespace GameData
 {
     public class BuffDatabase : ADatabase<EBuffType, Buff>, IBuffDatabase
     {
-        public BuffDatabase(BuffData[] buffData)
+        public BuffDatabase(GameDataProvider gameDataProvider)
         {
-            foreach (var data in buffData)
+            foreach (var data in gameDataProvider.Data.buffs)
             {
                 var type = (EBuffType) data.id;
                 var buffStats = ParseBuffStats(data.stats);
