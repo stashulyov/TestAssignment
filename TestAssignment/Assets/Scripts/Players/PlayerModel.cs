@@ -1,6 +1,6 @@
 namespace Players
 {
-    public class Player : IPlayer
+    public class PlayerModel : IPlayerModel
     {
         public float Hp { get; private set; }
         public float Armor { get; private set; }
