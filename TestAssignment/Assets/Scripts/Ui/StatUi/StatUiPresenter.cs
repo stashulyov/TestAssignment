@@ -1,3 +1,4 @@
+using System.Globalization;
 using UnityEngine;
 
 namespace Ui.StatUi
@@ -11,9 +12,9 @@ namespace Ui.StatUi
             _view = view;
         }
 
-        public void SetText(string text)
+        public void SetValue(float value)
         {
-            _view.SetText(text);
+            _view.SetValue(value.ToString(CultureInfo.CurrentCulture));
         }
 
         public void SetIcon(Icon icon)

@@ -36,12 +36,13 @@ namespace Common
                 foreach (var item in _statUiDatabase.All)
                 {
                     var statUi = item.Value;
-
                     var statUiPresenter = _statUiFactory.Create();
 
                     statUiPresenter.SetIcon(statUi.Icon);
-                    statUiPresenter.SetText(statUi.Title);
+                    statUiPresenter.SetValue(0f);
                     statUiPresenter.Attach(parent);
+
+                    uiModel.AddPresenter(statUi.Type, statUiPresenter);
                 }
 
                 _uiModelDatabase.Add(id, uiModel);

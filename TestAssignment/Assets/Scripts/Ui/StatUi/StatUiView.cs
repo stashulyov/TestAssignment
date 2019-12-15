@@ -8,7 +8,7 @@ namespace Ui.StatUi
         [SerializeField] private Text _text;
         [SerializeField] private Image _icon;
 
-        public void SetText(string text)
+        public void SetValue(string text)
         {
             _text.text = text;
         }
