@@ -1,3 +1,14 @@
-﻿{
-	"name": "Scripts"
+{
+    "name": "Scripts",
+    "references": [
+        "LitJson"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
 }
