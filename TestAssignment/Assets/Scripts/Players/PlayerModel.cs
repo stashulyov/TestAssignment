@@ -26,7 +26,7 @@ namespace Players
         public void Damage(float damage)
         {
             damage *= (1f - 0.01f * Armor);
-            
+
             if (damage < 0f)
                 return;
 
