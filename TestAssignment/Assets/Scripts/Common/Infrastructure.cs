@@ -1,9 +1,9 @@
 using GameData;
+using Players;
 using Prefabs;
 using Proxies;
 using ScriptableObjects;
 using Ui.StatUi;
-using UnityEngine;
 
 namespace Common
 {
@@ -22,7 +22,15 @@ namespace Common
         private StatUiFactory _statUiFactory;
         private StatUiDatabase _statUiDatabase;
 
-        private PlayerUiBuilder _playerUiBuilder;
+        private PlayerModelFactory _playerModelFactory;
+        private PlayerModelDatabase _playerModelDatabase;
+        private PlayerModelBuilder _playerModelBuilder;
+
+        private UiModelFactory _uiModelFactory;
+        private UiModelDatabase _uiModelDatabase;
+        private UiBuilder _uiBuilder;
+
+        private GameDirector _gameDirector;
 
         public Infrastructure(MonoBehaviourServiceLocator monoBehaviourServiceLocator)
         {
@@ -43,12 +51,17 @@ namespace Common
 
             _statUiDatabase = new StatUiDatabase(_gameDataProvider, _iconsDatabase);
 
-            _playerUiBuilder = new PlayerUiBuilder(_statUiFactory, _statUiDatabase);
+            _playerModelFactory = new PlayerModelFactory();
+            _playerModelDatabase = new PlayerModelDatabase();
+            _playerModelBuilder = new PlayerModelBuilder(_playerModelFactory, _playerModelDatabase);
 
-            _playerUiBuilder.Build(new Transform[]
-            {
-                null, null
-            });
+            _uiModelFactory = new UiModelFactory();
+            _uiModelDatabase = new UiModelDatabase();
+            _uiBuilder = new UiBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiFactory);
+
+            _gameDirector = new GameDirector(_playerModelBuilder, _uiBuilder, _monoBehaviourServiceLocator);
+
+            _gameDirector.Initialize();
         }
     }
 }
