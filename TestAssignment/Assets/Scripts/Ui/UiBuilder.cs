@@ -2,6 +2,7 @@ using System;
 using GameData;
 using Ui.StatUi;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Common
 {
@@ -21,17 +22,19 @@ namespace Common
             _statUiFactory = statUiFactory;
         }
 
-        public void Build(int[] playerIds, Transform[] parents)
+        public void Build(int[] playerIds, Transform[] parents, Button[] attackButtons)
         {
-            if (playerIds.Length != parents.Length)
+            if (playerIds.Length != parents.Length || playerIds.Length != attackButtons.Length)
                 throw new ArgumentOutOfRangeException(nameof(parents), "Count of players and panels are not equal.");
 
             for (int i = 0; i < playerIds.Length; i++)
             {
                 var id = playerIds[i];
                 var parent = parents[i];
+                var attackButton = attackButtons[i];
 
                 var uiModel = _uiModelFactory.Create(id);
+                uiModel.AddButton(attackButton);
 
                 foreach (var item in _statUiDatabase.All)
                 {

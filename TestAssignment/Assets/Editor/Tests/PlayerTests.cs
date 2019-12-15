@@ -37,7 +37,7 @@ namespace Tests
             var hp = 100f;
             player.Hp = hp;
 
-            player.Attack(damage);
+            player.ApplyDamage(damage);
 
             Assert.AreEqual(player.Hp, hp - damage, float.Epsilon);
         }
@@ -50,7 +50,7 @@ namespace Tests
             var damage = 100f;
             player.Hp = hp;
 
-            player.Attack(damage);
+            player.ApplyDamage(damage);
 
             Assert.AreEqual(player.Hp, 0f);
         }
@@ -63,7 +63,7 @@ namespace Tests
             var damage = -100f;
             player.Hp = hp;
 
-            player.Attack(damage);
+            player.ApplyDamage(damage);
 
             Assert.AreEqual(player.Hp, hp);
         }
@@ -102,7 +102,7 @@ namespace Tests
             player.Hp = hp;
             player.Armor = armor;
 
-            player.Attack(damage);
+            player.ApplyDamage(damage);
 
             Assert.AreEqual(player.Hp, hp);
         }
@@ -116,7 +116,7 @@ namespace Tests
             player.Hp = hp;
             player.Armor = armor;
 
-            player.Attack(damage);
+            player.ApplyDamage(damage);
 
             Assert.AreEqual(player.Hp, expectedHp, float.Epsilon);
         }

@@ -12,6 +12,6 @@ namespace Players
         float Vampirism { get; set; }
         float Damage { get; set; }
 
-        void Attack(float damage);
+        void ApplyDamage(float damage);
     }
 }

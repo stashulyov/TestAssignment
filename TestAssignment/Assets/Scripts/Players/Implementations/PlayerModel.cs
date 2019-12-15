@@ -60,7 +60,7 @@ namespace Players
             return value;
         }
 
-        public void Attack(float damage)
+        public void ApplyDamage(float damage)
         {
             damage *= (1f - 0.01f * Armor);
 

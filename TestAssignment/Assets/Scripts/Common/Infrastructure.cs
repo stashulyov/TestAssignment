@@ -26,6 +26,10 @@ namespace Common
         private PlayerModelDatabase _playerModelDatabase;
         private PlayerModelBuilder _playerModelBuilder;
 
+        private PlayerViewFactory _playerViewFactory;
+        private PlayerViewDatabase _playerViewDatabase;
+        private IPlayerViewBuilder _playerViewBuilder;
+
         private UiModelFactory _uiModelFactory;
         private UiModelDatabase _uiModelDatabase;
         private UiBuilder _uiBuilder;
@@ -55,11 +59,15 @@ namespace Common
             _playerModelDatabase = new PlayerModelDatabase();
             _playerModelBuilder = new PlayerModelBuilder(_playerModelFactory, _playerModelDatabase);
 
+            _playerViewFactory = new PlayerViewFactory();
+            _playerViewDatabase = new PlayerViewDatabase();
+            _playerViewBuilder = new PlayerViewBuilder(_playerViewFactory, _playerViewDatabase);
+
             _uiModelFactory = new UiModelFactory();
             _uiModelDatabase = new UiModelDatabase();
             _uiBuilder = new UiBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiFactory);
 
-            _gameDirector = new GameDirector(_playerModelBuilder, _uiBuilder, _monoBehaviourServiceLocator);
+            _gameDirector = new GameDirector(_playerModelBuilder, _playerViewBuilder, _uiBuilder, _monoBehaviourServiceLocator);
         }
     }
 }

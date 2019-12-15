@@ -1,11 +1,14 @@
+using System;
 using System.Collections.Generic;
 using GameData;
 using Ui.StatUi;
+using UnityEngine.UI;
 
 namespace Common
 {
     public class UiModel : IUiModel
     {
+        public event Action<int> OnButtonPressed;
         public int Id { get; }
 
         private Dictionary<EStatType, StatUiPresenter> _stats;
@@ -14,7 +17,7 @@ namespace Common
         public UiModel(int id)
         {
             Id = id;
-            
+
             _stats = new Dictionary<EStatType, StatUiPresenter>();
             _buffs = new Dictionary<EBuffType, StatUiPresenter>();
         }
@@ -29,9 +32,19 @@ namespace Common
             _buffs.Add(buffType, presenter);
         }
 
+        public void AddButton(Button button)
+        {
+            button.onClick.AddListener(OnClick);
+        }
+
         public void SetStat(Stat stat)
         {
             _stats[stat.Type].SetValue(stat.Value);
+        }
+
+        private void OnClick()
+        {
+            OnButtonPressed?.Invoke(Id);
         }
     }
 }
