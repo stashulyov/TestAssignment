@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Common
+namespace Core
 {
     public class ADatabase<TKey, TValue>
     {

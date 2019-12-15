@@ -1,4 +1,5 @@
 using Common;
+using Core;
 using Ui;
 
 namespace ScriptableObjects

@@ -7,7 +7,7 @@ namespace Common
 {
     public class UiBuilder : IUiBuilder
     {
-        public IUiModelFactory _uiModelFactory;
+        private readonly IUiModelFactory _uiModelFactory;
         private readonly IUiModelDatabase _uiModelDatabase;
         private readonly IStatUiDatabase _statUiDatabase;
         private readonly IStatUiFactory _statUiFactory;
