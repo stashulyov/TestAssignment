@@ -5,12 +5,10 @@ namespace Common
 {
     public class PlayerViewBuilder : IPlayerViewBuilder
     {
-        private readonly IPlayerViewFactory _playerViewFactory;
         private readonly IPlayerViewDatabase _playerViewDatabase;
 
         public PlayerViewBuilder(IPlayerViewFactory playerViewFactory, IPlayerViewDatabase playerViewDatabase)
         {
-            _playerViewFactory = playerViewFactory;
             _playerViewDatabase = playerViewDatabase;
         }
 
@@ -21,7 +19,7 @@ namespace Common
                 var id = playerIds[i];
                 var animator = animators[i];
 
-                var playerView = _playerViewFactory.Create(id);
+                var playerView = animator.GetComponent<PlayerView>();
                 playerView.AddAnimator(animator);
 
                 _playerViewDatabase.Add(id, playerView);

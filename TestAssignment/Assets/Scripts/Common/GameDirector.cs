@@ -10,14 +10,16 @@ namespace Common
         private readonly IPlayerViewBuilder _playerViewBuilder;
         private readonly IUiBuilder _uiBuilder;
         private readonly MonoBehaviourServiceLocator _monoBehaviourServiceLocator;
+        private readonly IAttackUiSystem _attackUiSystem;
 
         public GameDirector(IPlayerModelBuilder playerModelBuilder, IPlayerViewBuilder playerViewBuilder, IUiBuilder uiBuilder,
-            MonoBehaviourServiceLocator monoBehaviourServiceLocator)
+            MonoBehaviourServiceLocator monoBehaviourServiceLocator, IAttackUiSystem attackUiSystem)
         {
             _playerModelBuilder = playerModelBuilder;
             _playerViewBuilder = playerViewBuilder;
             _uiBuilder = uiBuilder;
             _monoBehaviourServiceLocator = monoBehaviourServiceLocator;
+            _attackUiSystem = attackUiSystem;
         }
 
         public void Initialize()
@@ -60,28 +62,7 @@ namespace Common
             _playerModelBuilder.Build(ids);
             _playerViewBuilder.Build(ids, animators);
             _uiBuilder.Build(ids, transforms, attackButtons);
-        }
-    }
-
-    public class AttackUiSystem
-    {
-        private readonly IUiModelDatabase _uiModelDatabase;
-
-        public AttackUiSystem(IUiModelDatabase uiModelDatabase)
-        {
-            _uiModelDatabase = uiModelDatabase;
-        }
-
-        public void Build()
-        {
-            foreach (var item in _uiModelDatabase.All)
-            {
-                item.Value.OnButtonPressed += OnButtonPressed;
-            }
-        }
-
-        private void OnButtonPressed(int id)
-        {
+            _attackUiSystem.Build();
         }
     }
 }

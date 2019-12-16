@@ -34,6 +34,10 @@ namespace Common
         private UiModelDatabase _uiModelDatabase;
         private UiBuilder _uiBuilder;
 
+        private DamageApplicator _damageApplicator;
+
+        private AttackUiSystem _attackUiSystem;
+        
         private GameDirector _gameDirector;
 
         public Infrastructure(MonoBehaviourServiceLocator monoBehaviourServiceLocator)
@@ -66,8 +70,12 @@ namespace Common
             _uiModelFactory = new UiModelFactory();
             _uiModelDatabase = new UiModelDatabase();
             _uiBuilder = new UiBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiFactory);
+            
+            _damageApplicator = new DamageApplicator(_playerModelDatabase);
+            
+            _attackUiSystem = new AttackUiSystem(_uiModelDatabase, _playerViewDatabase, _damageApplicator);
 
-            _gameDirector = new GameDirector(_playerModelBuilder, _playerViewBuilder, _uiBuilder, _monoBehaviourServiceLocator);
+            _gameDirector = new GameDirector(_playerModelBuilder, _playerViewBuilder, _uiBuilder, _monoBehaviourServiceLocator, _attackUiSystem);
         }
     }
 }
