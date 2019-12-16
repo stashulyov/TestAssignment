@@ -2,9 +2,9 @@ namespace Players
 {
     public class PlayerModelFactory : IPlayerModelFactory
     {
-        public IPlayerModel Create(int id)
+        public IPlayerModel Create(int playerId)
         {
-            var model = new PlayerModel();
+            var model = new PlayerModel(playerId);
             return model;
         }
     }

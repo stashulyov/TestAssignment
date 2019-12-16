@@ -5,7 +5,8 @@ namespace Players
 {
     public interface IPlayerModel
     {
-        event Action<EStatType, float> OnChange;
+        event Action<int, EStatType, float> OnChangeStat;
+        event Action<int, EBuffType> OnChangeBuff;
         
         float Hp { get; set; }
         float Armor { get; set; }
@@ -13,5 +14,6 @@ namespace Players
         float Damage { get; set; }
 
         void ApplyDamage(float damage);
+        void ApplyBuff(Buff buff);
     }
 }

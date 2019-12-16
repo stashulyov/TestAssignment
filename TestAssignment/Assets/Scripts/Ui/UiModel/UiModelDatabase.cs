@@ -1,4 +1,5 @@
 using Core;
+using Ui.UiModel;
 
 namespace Common
 {

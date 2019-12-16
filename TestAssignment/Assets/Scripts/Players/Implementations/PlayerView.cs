@@ -11,6 +11,11 @@ namespace Players
         private Animator _animator;
         private GameObject _gameObject;
 
+        private void Awake()
+        {
+            _animator = GetComponent<Animator>();
+        }
+
         public void AddAnimator(Animator animator)
         {
             _animator = animator;

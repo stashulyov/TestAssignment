@@ -1,55 +1,52 @@
-using System;
 using GameData;
+using Signals;
 using Ui.StatUi;
-using UnityEngine;
-using UnityEngine.UI;
+using Ui.UiModel;
 
 namespace Common
 {
-    public class UiBuilder : IUiBuilder
+    public class UiBuilder : IPlayerAddedListener
     {
         private readonly IUiModelFactory _uiModelFactory;
         private readonly IUiModelDatabase _uiModelDatabase;
         private readonly IStatUiDatabase _statUiDatabase;
         private readonly IStatUiFactory _statUiFactory;
+        private readonly IPlayerSceneProvider _playerSceneProvider;
+        private readonly IUiModelBuiltBus _bus;
 
         public UiBuilder(IUiModelFactory uiModelFactory, IUiModelDatabase uiModelDatabase, IStatUiDatabase statUiDatabase,
-            IStatUiFactory statUiFactory)
+            IStatUiFactory statUiFactory, IPlayerSceneProvider playerSceneProvider, IUiModelBuiltBus bus)
         {
             _uiModelFactory = uiModelFactory;
             _uiModelDatabase = uiModelDatabase;
             _statUiDatabase = statUiDatabase;
             _statUiFactory = statUiFactory;
+            _playerSceneProvider = playerSceneProvider;
+            _bus = bus;
         }
 
-        public void Build(int[] playerIds, Transform[] parents, Button[] attackButtons)
+        public void OnPlayerAdded(PlayerAddedSignal signal)
         {
-            if (playerIds.Length != parents.Length || playerIds.Length != attackButtons.Length)
-                throw new ArgumentOutOfRangeException(nameof(parents), "Count of players and panels are not equal.");
+            var attackButton = _playerSceneProvider.GetButton(signal.PlayerId);
+            var parent = _playerSceneProvider.GetTransform(signal.PlayerId);
 
-            for (int i = 0; i < playerIds.Length; i++)
+            var uiModel = _uiModelFactory.Create(signal.PlayerId);
+            uiModel.AddButton(attackButton);
+
+            foreach (var item in _statUiDatabase.All)
             {
-                var id = playerIds[i];
-                var parent = parents[i];
-                var attackButton = attackButtons[i];
+                var statUi = item.Value;
+                var statUiPresenter = _statUiFactory.Create();
 
-                var uiModel = _uiModelFactory.Create(id);
-                uiModel.AddButton(attackButton);
+                statUiPresenter.SetIcon(statUi.Icon);
+                statUiPresenter.SetValue(0f);
+                statUiPresenter.Attach(parent);
 
-                foreach (var item in _statUiDatabase.All)
-                {
-                    var statUi = item.Value;
-                    var statUiPresenter = _statUiFactory.Create();
-
-                    statUiPresenter.SetIcon(statUi.Icon);
-                    statUiPresenter.SetValue(0f);
-                    statUiPresenter.Attach(parent);
-
-                    uiModel.AddPresenter(statUi.Type, statUiPresenter);
-                }
-
-                _uiModelDatabase.Add(id, uiModel);
+                uiModel.AddPresenter(statUi.Type, statUiPresenter);
             }
+
+            _uiModelDatabase.Add(signal.PlayerId, uiModel);
+            _bus.Fire(new UiModelBuiltSignal(signal.PlayerId));
         }
     }
 }

@@ -5,7 +5,10 @@ namespace Players
 {
     public class PlayerModel : IPlayerModel
     {
-        public event Action<EStatType, float> OnChange;
+        public event Action<int, EStatType, float> OnChangeStat;
+        public event Action<int, EBuffType> OnChangeBuff;
+
+        private readonly int _playerId;
 
         private float _hp;
         private float _armor;
@@ -18,7 +21,7 @@ namespace Players
             set
             {
                 _hp = GetCheckedValue(value);
-                OnChange?.Invoke(EStatType.Hp, _hp);
+                InvokeOnChangeStat(EStatType.Hp, _hp);
             }
         }
 
@@ -28,7 +31,7 @@ namespace Players
             set
             {
                 _armor = GetCheckedValue(value);
-                OnChange?.Invoke(EStatType.Armor, _armor);
+                InvokeOnChangeStat(EStatType.Armor, _armor);
             }
         }
 
@@ -38,7 +41,7 @@ namespace Players
             set
             {
                 _vampirism = GetCheckedValue(value);
-                OnChange?.Invoke(EStatType.Vampirism, _vampirism);
+                InvokeOnChangeStat(EStatType.Vampirism, _vampirism);
             }
         }
 
@@ -48,8 +51,13 @@ namespace Players
             set
             {
                 _damage = GetCheckedValue(value);
-                OnChange?.Invoke(EStatType.Damage, _damage);
+                InvokeOnChangeStat(EStatType.Damage, _damage);
             }
+        }
+
+        public PlayerModel(int playerId)
+        {
+            _playerId = playerId;
         }
 
         private float GetCheckedValue(float value)
@@ -71,6 +79,41 @@ namespace Players
                 Hp = 0f;
             else
                 Hp -= damage;
+        }
+
+        public void ApplyBuff(Buff buff)
+        {
+            foreach (var stat in buff.Stats)
+            {
+                switch (stat.Type)
+                {
+                    case EStatType.Hp:
+                        Hp += stat.Value;
+                        break;
+
+                    case EStatType.Armor:
+                        Armor += stat.Value;
+                        break;
+
+                    case EStatType.Damage:
+                        Damage += stat.Value;
+                        break;
+
+                    case EStatType.Vampirism:
+                        Vampirism += stat.Value;
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            OnChangeBuff?.Invoke(_playerId, buff.Type);
+        }
+
+        private void InvokeOnChangeStat(EStatType type, float value)
+        {
+            OnChangeStat?.Invoke(_playerId, type, value);
         }
     }
 }

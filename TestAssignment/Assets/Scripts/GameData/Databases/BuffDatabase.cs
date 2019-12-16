@@ -1,5 +1,6 @@
-using Common;
+using System.Linq;
 using Core;
+using UnityEngine;
 
 namespace GameData
 {
@@ -31,6 +32,12 @@ namespace GameData
             }
 
             return array;
+        }
+
+        public Buff GetRandomBuff()
+        {
+            var random = Random.Range(0, All.Count());
+            return All.ElementAt(random).Value;
         }
     }
 }
