@@ -9,11 +9,12 @@ namespace Common
     {
         event Action<int> OnButtonPressed;
 
-        int Id { get; }
-        void AddPresenter(EStatType statUiType, StatUiPresenter presenter);
-        void AddBuff(EBuffType buffType, StatUiPresenter presenter);
+        void AddStatPresenter(EStatType statUiType, StatUiPresenter presenter);
+        void AddBuffPresenter(StatUiPresenter presenter);
         void AddButton(Button button);
 
         void SetStat(Stat stat);
+
+        void ClearBuffs();
     }
 }

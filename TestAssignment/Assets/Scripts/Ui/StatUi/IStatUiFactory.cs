@@ -1,7 +1,9 @@
+using System;
+
 namespace Ui.StatUi
 {
     public interface IStatUiFactory
     {
-        StatUiPresenter Create();
+        StatUiPresenter Create(Action<StatUiPresenter> despawnCallback);
     }
 }

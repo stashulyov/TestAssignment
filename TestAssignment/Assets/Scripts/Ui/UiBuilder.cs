@@ -10,18 +10,18 @@ namespace Common
         private readonly IUiModelFactory _uiModelFactory;
         private readonly IUiModelDatabase _uiModelDatabase;
         private readonly IStatUiDatabase _statUiDatabase;
-        private readonly IStatUiFactory _statUiFactory;
         private readonly IPlayerSceneProvider _playerSceneProvider;
+        private readonly IStatUiPool _statUiPool;
         private readonly IUiModelBuiltBus _bus;
 
         public UiBuilder(IUiModelFactory uiModelFactory, IUiModelDatabase uiModelDatabase, IStatUiDatabase statUiDatabase,
-            IStatUiFactory statUiFactory, IPlayerSceneProvider playerSceneProvider, IUiModelBuiltBus bus)
+            IStatUiPool statUiPool, IPlayerSceneProvider playerSceneProvider, IUiModelBuiltBus bus)
         {
             _uiModelFactory = uiModelFactory;
             _uiModelDatabase = uiModelDatabase;
             _statUiDatabase = statUiDatabase;
-            _statUiFactory = statUiFactory;
             _playerSceneProvider = playerSceneProvider;
+            _statUiPool = statUiPool;
             _bus = bus;
         }
 
@@ -36,13 +36,13 @@ namespace Common
             foreach (var item in _statUiDatabase.All)
             {
                 var statUi = item.Value;
-                var statUiPresenter = _statUiFactory.Create();
+                var statUiPresenter = _statUiPool.Spawn();
 
                 statUiPresenter.SetIcon(statUi.Icon);
                 statUiPresenter.SetValue(0f);
                 statUiPresenter.Attach(parent);
 
-                uiModel.AddPresenter(statUi.Type, statUiPresenter);
+                uiModel.AddStatPresenter(statUi.Type, statUiPresenter);
             }
 
             _uiModelDatabase.Add(signal.PlayerId, uiModel);

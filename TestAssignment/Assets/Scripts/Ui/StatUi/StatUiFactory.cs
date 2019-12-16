@@ -1,5 +1,6 @@
+using System;
 using Prefabs;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Ui.StatUi
 {
@@ -14,13 +15,13 @@ namespace Ui.StatUi
             _prefabsDatabase = prefabsDatabase;
         }
 
-        public StatUiPresenter Create()
+        public StatUiPresenter Create(Action<StatUiPresenter> despawnCallback)
         {
             var prefab = _prefabsDatabase.Get(PrefabName);
             var gameObject = Object.Instantiate(prefab);
 
             var view = gameObject.GetComponent<StatUiView>();
-            var presenter = new StatUiPresenter(view);
+            var presenter = new StatUiPresenter(view, despawnCallback);
 
             return presenter;
         }

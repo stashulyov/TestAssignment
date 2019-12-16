@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using UnityEngine;
 
@@ -6,10 +7,12 @@ namespace Ui.StatUi
     public class StatUiPresenter
     {
         private readonly StatUiView _view;
+        private readonly Action<StatUiPresenter> _onDespawn;
 
-        public StatUiPresenter(StatUiView view)
+        public StatUiPresenter(StatUiView view, Action<StatUiPresenter> onDespawn)
         {
             _view = view;
+            _onDespawn = onDespawn;
         }
 
         public void SetValue(float value)
@@ -30,6 +33,16 @@ namespace Ui.StatUi
         public void Attach(Transform parent)
         {
             _view.Attach(parent);
+        }
+        
+        public void Despawn()
+        {
+            _onDespawn.Invoke(this);
+        }
+
+        public void SetActive(bool state)
+        {
+            _view.SetActive(state);
         }
     }
 }

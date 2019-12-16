@@ -111,6 +111,7 @@ namespace Players
                     }
                 }
             }
+
             OnChangeBuffs?.Invoke(_playerId, buffs);
         }
 

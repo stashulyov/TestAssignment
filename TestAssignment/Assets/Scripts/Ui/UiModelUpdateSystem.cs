@@ -4,6 +4,7 @@ using Players;
 using Signals;
 using Ui.StatUi;
 using Ui.UiModel;
+using UnityEngine;
 
 namespace Common
 {
@@ -12,16 +13,16 @@ namespace Common
         private readonly IPlayerModelDatabase _playerModelDatabase;
         private readonly IUiModelDatabase _uiModelDatabase;
         private readonly IBuffUiDatabase _buffUiDatabase;
-        private readonly IStatUiFactory _statUiFactory;
+        private readonly IStatUiPool _statUiPool;
         private readonly IPlayerSceneProvider _playerSceneProvider;
 
         public UiModelUpdateSystem(IPlayerModelDatabase playerModelDatabase, IUiModelDatabase uiModelDatabase,
-            IBuffUiDatabase buffUiDatabase, IStatUiFactory statUiFactory, IPlayerSceneProvider playerSceneProvider)
+            IBuffUiDatabase buffUiDatabase, IStatUiPool statUiPool, IPlayerSceneProvider playerSceneProvider)
         {
             _playerModelDatabase = playerModelDatabase;
             _uiModelDatabase = uiModelDatabase;
             _buffUiDatabase = buffUiDatabase;
-            _statUiFactory = statUiFactory;
+            _statUiPool = statUiPool;
             _playerSceneProvider = playerSceneProvider;
         }
 
@@ -41,11 +42,14 @@ namespace Common
         private void OnChangeBuffs(int playerId, List<Buff> buffs)
         {
             var uiModel = _uiModelDatabase.Get(playerId);
+            uiModel.ClearBuffs();
 
             foreach (var buff in buffs)
             {
+                Debug.LogError(buff.Type);
+
                 var buffUi = _buffUiDatabase.Get(buff.Type);
-                var presenter = _statUiFactory.Create();
+                var presenter = _statUiPool.Spawn();
 
                 presenter.SetIcon(buffUi.Icon);
                 presenter.SetTitle(buffUi.Title);
@@ -53,7 +57,7 @@ namespace Common
                 var parent = _playerSceneProvider.GetTransform(playerId);
                 presenter.Attach(parent);
 
-                uiModel.AddBuff(buff.Type, presenter);
+                uiModel.AddBuffPresenter(presenter);
             }
         }
     }

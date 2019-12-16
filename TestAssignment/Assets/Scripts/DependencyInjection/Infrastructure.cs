@@ -24,6 +24,7 @@ namespace Common
 
         private StatUiFactory _statUiFactory;
         private StatUiDatabase _statUiDatabase;
+        private StatUiPool _statUiPool;
 
         private PlayerModelFactory _playerModelFactory;
         private PlayerModelDatabase _playerModelDatabase;
@@ -75,8 +76,8 @@ namespace Common
             _gameDataProvider = new GameDataProvider(_resourcesProxy, _jsonProxy);
 
             _statUiFactory = new StatUiFactory(_prefabsDatabase);
-
             _statUiDatabase = new StatUiDatabase(_gameDataProvider, _iconsDatabase);
+            _statUiPool = new StatUiPool(_statUiFactory);
 
             _playerModelFactory = new PlayerModelFactory();
             _playerModelDatabase = new PlayerModelDatabase();
@@ -93,14 +94,14 @@ namespace Common
             _buffUiDatabase = new BuffUiDatabase(_gameDataProvider, _iconsDatabase);
 
             _attackUiModelSystem = new AttackUiModelSystem(_uiModelDatabase, _playerViewDatabase, _damageApplicator);
-            _uiModelUpdateSystem = new UiModelUpdateSystem(_playerModelDatabase, _uiModelDatabase, _buffUiDatabase, _statUiFactory, _playerSceneProvider);
+            _uiModelUpdateSystem = new UiModelUpdateSystem(_playerModelDatabase, _uiModelDatabase, _buffUiDatabase, _statUiPool, _playerSceneProvider);
 
             _uiModelBuiltBus = new UiModelBuiltBus(new List<IUiModelBuiltListener>()
             {
                 _attackUiModelSystem, _uiModelUpdateSystem
             });
 
-            _uiBuilder = new UiBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiFactory, _playerSceneProvider, _uiModelBuiltBus);
+            _uiBuilder = new UiBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiPool, _playerSceneProvider, _uiModelBuiltBus);
 
             _playerAddedBus = new PlayerAddedBus(new List<IPlayerAddedListener>()
             {

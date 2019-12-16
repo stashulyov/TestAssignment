@@ -18,6 +18,8 @@ namespace Buffs
 
         public void ApplyBuffs(IPlayerModel playerModel)
         {
+            // todo generates non-unique buffs
+            
             var buffsCount = Random.Range(_gameSettings.BuffCountMin, _gameSettings.BuffCountMax + 1);
             var buffs = new List<Buff>(buffsCount);
 
@@ -34,7 +36,10 @@ namespace Buffs
 
         private Buff GetUniqueBuff(List<Buff> buffs)
         {
-            if (_buffDatabase.Count <= buffs.Capacity)
+            // в data описано 4 баффа, а BuffCountMax = 5, то есть если стоит условие AllowDuplicateBuffs = false,
+            // и нужно получить уникальные баффы, система уйдёт в бесконечный поиск на последнем
+            
+            if (_buffDatabase.Count <= buffs.Count)
                 return _buffDatabase.GetRandomBuff();
 
             Buff buff;

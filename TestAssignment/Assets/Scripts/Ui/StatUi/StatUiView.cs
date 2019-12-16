@@ -24,5 +24,10 @@ namespace Ui.StatUi
             transform.localScale = Vector3.one;
             transform.localPosition = Vector3.zero;
         }
+
+        public void SetActive(bool state)
+        {
+            gameObject.SetActive(state);
+        }
     }
 }
