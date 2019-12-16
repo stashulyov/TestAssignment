@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GameData;
 
 namespace Players
@@ -6,7 +7,7 @@ namespace Players
     public class PlayerModel : IPlayerModel
     {
         public event Action<int, EStatType, float> OnChangeStat;
-        public event Action<int, EBuffType> OnChangeBuff;
+        public event Action<int, List<Buff>> OnChangeBuffs;
 
         private readonly int _playerId;
 
@@ -81,34 +82,36 @@ namespace Players
                 Hp -= damage;
         }
 
-        public void ApplyBuff(Buff buff)
+        public void ApplyBuffs(List<Buff> buffs)
         {
-            foreach (var stat in buff.Stats)
+            foreach (var buff in buffs)
             {
-                switch (stat.Type)
+                foreach (var stat in buff.Stats)
                 {
-                    case EStatType.Hp:
-                        Hp += stat.Value;
-                        break;
+                    switch (stat.Type)
+                    {
+                        case EStatType.Hp:
+                            Hp += stat.Value;
+                            break;
 
-                    case EStatType.Armor:
-                        Armor += stat.Value;
-                        break;
+                        case EStatType.Armor:
+                            Armor += stat.Value;
+                            break;
 
-                    case EStatType.Damage:
-                        Damage += stat.Value;
-                        break;
+                        case EStatType.Damage:
+                            Damage += stat.Value;
+                            break;
 
-                    case EStatType.Vampirism:
-                        Vampirism += stat.Value;
-                        break;
+                        case EStatType.Vampirism:
+                            Vampirism += stat.Value;
+                            break;
 
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
             }
-
-            OnChangeBuff?.Invoke(_playerId, buff.Type);
+            OnChangeBuffs?.Invoke(_playerId, buffs);
         }
 
         private void InvokeOnChangeStat(EStatType type, float value)

@@ -4,6 +4,7 @@ namespace Core
 {
     public class ADatabase<TKey, TValue>
     {
+        public int Count => _dictionary.Count;
         public IEnumerable<KeyValuePair<TKey, TValue>> All => _dictionary;
 
         private readonly Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();

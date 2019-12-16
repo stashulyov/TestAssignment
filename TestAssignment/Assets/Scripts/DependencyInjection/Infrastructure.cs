@@ -36,6 +36,8 @@ namespace Common
         private UiModelDatabase _uiModelDatabase;
         private UiBuilder _uiBuilder;
 
+        private BuffUiDatabase _buffUiDatabase;
+
         private DamageApplicator _damageApplicator;
 
         private AttackUiModelSystem _attackUiModelSystem;
@@ -88,8 +90,10 @@ namespace Common
 
             _damageApplicator = new DamageApplicator(_playerModelDatabase);
 
+            _buffUiDatabase = new BuffUiDatabase(_gameDataProvider, _iconsDatabase);
+
             _attackUiModelSystem = new AttackUiModelSystem(_uiModelDatabase, _playerViewDatabase, _damageApplicator);
-            _uiModelUpdateSystem = new UiModelUpdateSystem(_playerModelDatabase, _uiModelDatabase);
+            _uiModelUpdateSystem = new UiModelUpdateSystem(_playerModelDatabase, _uiModelDatabase, _buffUiDatabase, _statUiFactory, _playerSceneProvider);
 
             _uiModelBuiltBus = new UiModelBuiltBus(new List<IUiModelBuiltListener>()
             {

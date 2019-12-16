@@ -14,7 +14,12 @@ namespace Ui.StatUi
 
         public void SetValue(float value)
         {
-            _view.SetValue(value.ToString(CultureInfo.CurrentCulture));
+            _view.SetText(value.ToString(CultureInfo.CurrentCulture));
+        }
+
+        public void SetTitle(string title)
+        {
+            _view.SetText(title);
         }
 
         public void SetIcon(Icon icon)
