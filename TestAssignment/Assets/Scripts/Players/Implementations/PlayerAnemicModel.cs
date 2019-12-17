@@ -3,6 +3,7 @@ namespace Players
     public class PlayerAnemicModel : IPlayerModel
     {
         public int PlayerId { get; }
+        public bool IsDead => Hp < float.Epsilon;
 
         public float Hp { get; set; }
         public float Armor { get; set; }

@@ -113,7 +113,7 @@ namespace DependencyInjection
             _damageCalculator = new DamageCalculator();
             _vampirismCalculator = new VampirismCalculator();
             _damageApplicator = new DamageApplicator(_playerModelDatabase, _damageCalculator, _vampirismCalculator);
-            _damageSystem = new DamageSystem(_uiModelDatabase, _playerViewDatabase, _damageApplicator);
+            _damageSystem = new DamageSystem(_uiModelDatabase, _playerViewDatabase, _damageApplicator, _playerModelDatabase);
 
             var uiModelBuiltListeners = new List<IUiModelBuiltListener> {_damageSystem};
             _uiModelBuiltBus = new UiModelBuiltBus(uiModelBuiltListeners);

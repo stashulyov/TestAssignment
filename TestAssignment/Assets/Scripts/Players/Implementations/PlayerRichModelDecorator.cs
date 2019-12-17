@@ -14,6 +14,7 @@ namespace Players
         }
 
         public int PlayerId => _playerModel.PlayerId;
+        public bool IsDead => _playerModel.IsDead;
 
         public float Hp
         {
