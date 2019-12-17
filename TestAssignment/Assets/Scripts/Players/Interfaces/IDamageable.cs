@@ -2,6 +2,6 @@ namespace Players
 {
     public interface IDamageable
     {
-        int Id { get; }
+        int PlayerId { get; }
     }
 }

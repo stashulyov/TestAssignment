@@ -1,7 +1,6 @@
 using Players;
 using Signals;
 using Ui.UiModel;
-using UnityEngine;
 
 namespace Common
 {
@@ -24,16 +23,14 @@ namespace Common
             uiModel.OnButtonPressed += OnButtonPressed;
         }
 
-        private void OnButtonPressed(int attacker)
+        private void OnButtonPressed(int attackerId)
         {
-            Debug.LogError(attacker);
+            var playerView = _playerViewDatabase.Get(attackerId);
+            var attackedId = playerView.GetEnemyId();
 
-            var playerView = _playerViewDatabase.Get(attacker);
-            var enemyId = playerView.GetEnemyId();
+            playerView.Attack();
 
-            _damageApplicator.ApplyDamage(enemyId, 10f);
-
-            Debug.LogError(enemyId);
+            _damageApplicator.ApplyDamage(attackerId, attackedId);
         }
     }
 }

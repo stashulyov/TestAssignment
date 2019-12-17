@@ -31,7 +31,7 @@ namespace Common
 
         private PlayerViewDatabase _playerViewDatabase;
 
-        private PlayerSceneProvider _playerSceneProvider;
+        private PlayerSceneUiProvider _playerSceneUiProvider;
 
         private UiModelFactory _uiModelFactory;
         private UiModelDatabase _uiModelDatabase;
@@ -51,7 +51,7 @@ namespace Common
 
         private StatDatabase _statDatabase;
 
-        private UiModelUpdateSystem _uiModelUpdateSystem;
+        private UiModelBuffsUpdateSystem _uiModelBuffsUpdateSystem;
 
         private GameSettings _gameSettings;
         private BuffDatabase _buffDatabase;
@@ -59,6 +59,12 @@ namespace Common
         private PlayerAddedBus _playerAddedBus;
         private UiModelBuiltBus _uiModelBuiltBus;
         private GameStartedBus _gameStartedBus;
+
+        private PlayerBuffsBus _playerBuffsBus;
+        private PlayerStatChangedBus _playerStatChangedBus;
+        private BuffsFactory _buffsFactory;
+        private PlayerViewFactory _playerViewFactory;
+        private UiModelStatUpdateSystem _uiModelStatUpdateSystem;
 
         public Infrastructure(MonoBehaviourServiceLocator monoBehaviourServiceLocator)
         {
@@ -84,7 +90,7 @@ namespace Common
 
             _playerViewDatabase = new PlayerViewDatabase();
 
-            _playerSceneProvider = new PlayerSceneProvider(_monoBehaviourServiceLocator.UiObjects.Hierarchies);
+            _playerSceneUiProvider = new PlayerSceneUiProvider(_monoBehaviourServiceLocator.UiObjects.Hierarchies);
 
             _uiModelFactory = new UiModelFactory();
             _uiModelDatabase = new UiModelDatabase();
@@ -94,14 +100,15 @@ namespace Common
             _buffUiDatabase = new BuffUiDatabase(_gameDataProvider, _iconsDatabase);
 
             _attackUiModelSystem = new AttackUiModelSystem(_uiModelDatabase, _playerViewDatabase, _damageApplicator);
-            _uiModelUpdateSystem = new UiModelUpdateSystem(_playerModelDatabase, _uiModelDatabase, _buffUiDatabase, _statUiPool, _playerSceneProvider);
+            _uiModelBuffsUpdateSystem = new UiModelBuffsUpdateSystem(_uiModelDatabase, _buffUiDatabase, _statUiPool, _playerSceneUiProvider);
+            _uiModelStatUpdateSystem = new UiModelStatUpdateSystem(_uiModelDatabase);
 
             _uiModelBuiltBus = new UiModelBuiltBus(new List<IUiModelBuiltListener>()
             {
-                _attackUiModelSystem, _uiModelUpdateSystem
+                _attackUiModelSystem
             });
 
-            _uiBuilder = new UiBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiPool, _playerSceneProvider, _uiModelBuiltBus);
+            _uiBuilder = new UiBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiPool, _playerSceneUiProvider, _uiModelBuiltBus);
 
             _playerAddedBus = new PlayerAddedBus(new List<IPlayerAddedListener>()
             {
@@ -114,8 +121,19 @@ namespace Common
 
             _buffDatabase = new BuffDatabase(_gameDataProvider);
 
+            _playerBuffsBus = new PlayerBuffsBus(new List<IPlayerBuffsAttachedListener>()
+            {
+                _uiModelBuffsUpdateSystem
+            }, new List<IPlayerBuffsDetachedListener>()
+            {
+                _uiModelBuffsUpdateSystem,
+            });
+
             _playerModelInitializer = new PlayerModelInitializer(_statDatabase);
-            _buffApplyingSystem = new BuffApplyingSystem(_gameSettings, _buffDatabase);
+
+            _buffsFactory = new BuffsFactory(_gameSettings, _buffDatabase);
+
+            _buffApplyingSystem = new BuffApplyingSystem(_buffsFactory, _playerBuffsBus);
 
             _gameController = new GameController(_playerModelInitializer, _playerModelDatabase, _buffApplyingSystem);
 
@@ -124,8 +142,15 @@ namespace Common
                 _gameController
             });
 
+            _playerStatChangedBus = new PlayerStatChangedBus(new List<IPlayerStatChangedListener>()
+            {
+                _uiModelStatUpdateSystem
+            });
+
+            _playerViewFactory = new PlayerViewFactory(_monoBehaviourServiceLocator.UiObjects.Hierarchies);
+
             _gameDirector = new GameDirector(_monoBehaviourServiceLocator, _playerAddedBus, _playerModelFactory, _playerModelDatabase, _playerViewDatabase,
-                _playerSceneProvider, _gameStartedBus);
+                _gameStartedBus, _playerStatChangedBus, _playerViewFactory);
         }
     }
 }

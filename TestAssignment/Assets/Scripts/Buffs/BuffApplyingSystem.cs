@@ -1,54 +1,59 @@
-using System.Collections.Generic;
+using System;
 using GameData;
 using Players;
-using UnityEngine;
+using Signals;
 
 namespace Buffs
 {
     public class BuffApplyingSystem : IBuffApplyingSystem
     {
-        private readonly IGameSettings _gameSettings;
-        private readonly IBuffDatabase _buffDatabase;
+        private readonly IBuffsFactory _buffsFactory;
+        private readonly IPlayerBuffsBus _playerBuffsBus;
 
-        public BuffApplyingSystem(IGameSettings gameSettings, IBuffDatabase buffDatabase)
+        public BuffApplyingSystem(IBuffsFactory buffsFactory, IPlayerBuffsBus playerBuffsBus)
         {
-            _gameSettings = gameSettings;
-            _buffDatabase = buffDatabase;
+            _buffsFactory = buffsFactory;
+            _playerBuffsBus = playerBuffsBus;
         }
 
         public void ApplyBuffs(IPlayerModel playerModel)
         {
-            // todo generates non-unique buffs
-            
-            var buffsCount = Random.Range(_gameSettings.BuffCountMin, _gameSettings.BuffCountMax + 1);
-            var buffs = new List<Buff>(buffsCount);
+            var buffs = _buffsFactory.Create();
 
-            for (int i = 0; i < buffs.Capacity; i++)
+            foreach (var buff in buffs)
             {
-                if (_gameSettings.AllowDuplicateBuffs)
-                    buffs.Add(_buffDatabase.GetRandomBuff());
-                else
-                    buffs.Add(GetUniqueBuff(buffs));
+                foreach (var stat in buff.Stats)
+                {
+                    switch (stat.Type)
+                    {
+                        case EStatType.Hp:
+                            playerModel.Hp += stat.Value;
+                            break;
+
+                        case EStatType.Armor:
+                            playerModel.Armor += stat.Value;
+                            break;
+
+                        case EStatType.Damage:
+                            playerModel.Damage += stat.Value;
+                            break;
+
+                        case EStatType.Vampirism:
+                            playerModel.Vampirism += stat.Value;
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
             }
 
-            playerModel.ApplyBuffs(buffs);
+            _playerBuffsBus.Fire(new PlayerBuffsAttachedSignal(playerModel.PlayerId, buffs));
         }
 
-        private Buff GetUniqueBuff(List<Buff> buffs)
+        public void ClearBuffs(IPlayerModel playerModel)
         {
-            // в data описано 4 баффа, а BuffCountMax = 5, то есть если стоит условие AllowDuplicateBuffs = false,
-            // и нужно получить уникальные баффы, система уйдёт в бесконечный поиск на последнем
-            
-            if (_buffDatabase.Count <= buffs.Count)
-                return _buffDatabase.GetRandomBuff();
-
-            Buff buff;
-            do
-            {
-                buff = _buffDatabase.GetRandomBuff();
-            } while (buffs.Contains(buff));
-
-            return buff;
+            _playerBuffsBus.Fire(new PlayerBuffsDetachedSignal(playerModel.PlayerId));
         }
     }
 }

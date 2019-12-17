@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using GameData;
-
 namespace Players
 {
     public interface IPlayerModel
     {
-        event Action<int, EStatType, float> OnChangeStat;
-        event Action<int, List<Buff>> OnChangeBuffs;
+        int PlayerId { get; }
 
         float Hp { get; set; }
         float Armor { get; set; }
@@ -15,6 +10,5 @@ namespace Players
         float Damage { get; set; }
 
         void ApplyDamage(float damage);
-        void ApplyBuffs(List<Buff> buffs);
     }
 }

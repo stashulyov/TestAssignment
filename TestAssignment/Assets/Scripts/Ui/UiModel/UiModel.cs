@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using GameData;
 using Ui.StatUi;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace Common
@@ -45,8 +44,6 @@ namespace Common
 
         public void ClearBuffs()
         {
-            Debug.LogError("Clear");
-            
             foreach (var buff in _buffs)
                 buff.Despawn();
 

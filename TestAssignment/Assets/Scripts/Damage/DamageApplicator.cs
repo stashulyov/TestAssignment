@@ -11,10 +11,12 @@ namespace Common
             _playerModelDatabase = playerModelDatabase;
         }
 
-        public void ApplyDamage(int playerId, float damage)
+        public void ApplyDamage(int attackerId, int attackedId)
         {
-            var player = _playerModelDatabase.Get(playerId);
-            player.ApplyDamage(damage);
+            var attacker = _playerModelDatabase.Get(attackerId);
+            var attacked = _playerModelDatabase.Get(attackedId);
+
+            attacked.ApplyDamage(attacker.Damage);
         }
     }
 }

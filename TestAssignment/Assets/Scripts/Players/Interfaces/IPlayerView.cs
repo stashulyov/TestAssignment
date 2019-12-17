@@ -1,10 +1,9 @@
-using UnityEngine;
-
 namespace Players
 {
     public interface IPlayerView
     {
-        void AddAnimator(Animator animator);
+        void SetId(int playerId);
         int GetEnemyId();
+        void Attack();
     }
 }

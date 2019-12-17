@@ -1,21 +1,15 @@
-using Players;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Common
 {
-    public class PlayerSceneProvider : IPlayerSceneProvider
+    public class PlayerSceneUiProvider : IPlayerSceneUiProvider
     {
         private readonly PlayerPanelHierarchy[] _hierarchies;
 
-        public PlayerSceneProvider(PlayerPanelHierarchy[] hierarchies)
+        public PlayerSceneUiProvider(PlayerPanelHierarchy[] hierarchies)
         {
             _hierarchies = hierarchies;
-        }
-
-        public IPlayerView GetView(int playerId)
-        {
-            return _hierarchies[playerId].character.GetComponent<IPlayerView>();
         }
 
         public Transform GetTransform(int playerId)

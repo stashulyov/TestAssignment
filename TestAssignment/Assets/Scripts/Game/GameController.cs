@@ -27,6 +27,8 @@ namespace Buffs
 
                 if (signal.AreBuffsEnabled)
                     _buffApplyingSystem.ApplyBuffs(playerModel);
+                else
+                    _buffApplyingSystem.ClearBuffs(playerModel);
             }
         }
     }

@@ -4,9 +4,9 @@ namespace Players
 {
     public class PlayerView : MonoBehaviour, IPlayerView, IDamageable
     {
-        [SerializeField] private int _id;
+        private static readonly int AttackTrigger = Animator.StringToHash("Attack");
 
-        public int Id => _id;
+        public int PlayerId { get; private set; }
 
         private Animator _animator;
         private GameObject _gameObject;
@@ -16,9 +16,9 @@ namespace Players
             _animator = GetComponent<Animator>();
         }
 
-        public void AddAnimator(Animator animator)
+        public void SetId(int playerId)
         {
-            _animator = animator;
+            PlayerId = playerId;
         }
 
         public int GetEnemyId()
@@ -26,10 +26,15 @@ namespace Players
             if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo))
             {
                 var otherPlayerView = hitInfo.transform.GetComponent<IDamageable>();
-                return otherPlayerView.Id;
+                return otherPlayerView.PlayerId;
             }
 
             return -1;
+        }
+
+        public void Attack()
+        {
+            _animator.SetTrigger(AttackTrigger);
         }
     }
 }

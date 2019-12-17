@@ -4,7 +4,7 @@ namespace Players
     {
         public IPlayerModel Create(int playerId)
         {
-            var model = new PlayerModel(playerId);
+            var model = new PlayerAnemicModel(playerId);
             return model;
         }
     }

@@ -10,25 +10,25 @@ namespace Common
         private readonly IUiModelFactory _uiModelFactory;
         private readonly IUiModelDatabase _uiModelDatabase;
         private readonly IStatUiDatabase _statUiDatabase;
-        private readonly IPlayerSceneProvider _playerSceneProvider;
+        private readonly IPlayerSceneUiProvider _playerSceneUiProvider;
         private readonly IStatUiPool _statUiPool;
         private readonly IUiModelBuiltBus _bus;
 
         public UiBuilder(IUiModelFactory uiModelFactory, IUiModelDatabase uiModelDatabase, IStatUiDatabase statUiDatabase,
-            IStatUiPool statUiPool, IPlayerSceneProvider playerSceneProvider, IUiModelBuiltBus bus)
+            IStatUiPool statUiPool, IPlayerSceneUiProvider playerSceneUiProvider, IUiModelBuiltBus bus)
         {
             _uiModelFactory = uiModelFactory;
             _uiModelDatabase = uiModelDatabase;
             _statUiDatabase = statUiDatabase;
-            _playerSceneProvider = playerSceneProvider;
+            _playerSceneUiProvider = playerSceneUiProvider;
             _statUiPool = statUiPool;
             _bus = bus;
         }
 
         public void OnPlayerAdded(PlayerAddedSignal signal)
         {
-            var attackButton = _playerSceneProvider.GetButton(signal.PlayerId);
-            var parent = _playerSceneProvider.GetTransform(signal.PlayerId);
+            var attackButton = _playerSceneUiProvider.GetButton(signal.PlayerId);
+            var parent = _playerSceneUiProvider.GetTransform(signal.PlayerId);
 
             var uiModel = _uiModelFactory.Create(signal.PlayerId);
             uiModel.AddButton(attackButton);
