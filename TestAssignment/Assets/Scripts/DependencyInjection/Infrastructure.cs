@@ -4,8 +4,9 @@ using Damage;
 using Game;
 using GameData;
 using Players;
-using Prefabs;
 using Proxies;
+using ScriptableObjects;
+using Stats;
 using Ui;
 
 namespace DependencyInjection

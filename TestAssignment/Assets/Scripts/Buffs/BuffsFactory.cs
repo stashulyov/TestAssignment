@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Game;
-using GameData;
 using UnityEngine;
 
 namespace Buffs

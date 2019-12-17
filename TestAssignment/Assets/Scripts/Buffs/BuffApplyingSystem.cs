@@ -1,6 +1,6 @@
 using System;
-using GameData;
 using Players;
+using Stats;
 
 namespace Buffs
 {

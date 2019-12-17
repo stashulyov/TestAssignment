@@ -1,10 +1,11 @@
+using System;
 using Core;
 using Players;
 using Ui;
 
 namespace Game
 {
-    public class GameDirector : IInitializable
+    public class GameDirector : IInitializable, IDisposable
     {
         private readonly IStartButtonsProvider _startButtonsProvider;
         private readonly IPlayerIdsProvider _playerIdsProvider;
@@ -34,6 +35,12 @@ namespace Game
         private void Play(bool buffsAreEnabled)
         {
             _gameStartedBus.Fire(new GameStartedSignal(buffsAreEnabled));
+        }
+
+        public void Dispose()
+        {
+            _startButtonsProvider.StartWithBuffsButton.onClick.RemoveAllListeners();
+            _startButtonsProvider.StartWithoutBuffsButton.onClick.RemoveAllListeners();
         }
     }
 }

@@ -4,7 +4,7 @@ using Ui;
 
 namespace Damage
 {
-    public class DamageSystem : IUiModelBuiltListener
+    public class DamageSystem : IUiModelBuiltListener, IDisposable
     {
         private readonly IUiModelDatabase _uiModelDatabase;
         private readonly IPlayerViewDatabase _playerViewDatabase;
@@ -45,6 +45,12 @@ namespace Damage
 
             if (_damageApplicator.ApplyDamage(attackerId, attackedId))
                 attackedView.Die();
+        }
+
+        public void Dispose()
+        {
+            foreach (var item in _uiModelDatabase.All)
+                item.Value.OnButtonPressed -= OnAttackPressed;
         }
     }
 }
