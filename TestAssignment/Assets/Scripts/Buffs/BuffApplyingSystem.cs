@@ -1,7 +1,6 @@
 using System;
 using GameData;
 using Players;
-using Signals;
 
 namespace Buffs
 {
@@ -9,15 +8,18 @@ namespace Buffs
     {
         private readonly IBuffsFactory _buffsFactory;
         private readonly IPlayerBuffsBus _playerBuffsBus;
+        private readonly IPlayerModelDatabase _playerModelDatabase;
 
-        public BuffApplyingSystem(IBuffsFactory buffsFactory, IPlayerBuffsBus playerBuffsBus)
+        public BuffApplyingSystem(IBuffsFactory buffsFactory, IPlayerBuffsBus playerBuffsBus, IPlayerModelDatabase playerModelDatabase)
         {
             _buffsFactory = buffsFactory;
             _playerBuffsBus = playerBuffsBus;
+            _playerModelDatabase = playerModelDatabase;
         }
 
-        public void ApplyBuffs(IPlayerModel playerModel)
+        public void ApplyBuffs(int playerId)
         {
+            var playerModel = _playerModelDatabase.Get(playerId);
             var buffs = _buffsFactory.Create();
 
             foreach (var buff in buffs)
@@ -51,8 +53,10 @@ namespace Buffs
             _playerBuffsBus.Fire(new PlayerBuffsAttachedSignal(playerModel.PlayerId, buffs));
         }
 
-        public void ClearBuffs(IPlayerModel playerModel)
+        public void ClearBuffs(int playerId)
         {
+            var playerModel = _playerModelDatabase.Get(playerId);
+
             _playerBuffsBus.Fire(new PlayerBuffsDetachedSignal(playerModel.PlayerId));
         }
     }

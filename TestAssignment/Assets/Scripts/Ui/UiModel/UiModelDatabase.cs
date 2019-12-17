@@ -1,7 +1,6 @@
 using Core;
-using Ui.UiModel;
 
-namespace Common
+namespace Ui
 {
     public class UiModelDatabase : ADatabase<int, IUiModel>, IUiModelDatabase
     {

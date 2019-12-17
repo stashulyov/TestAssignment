@@ -1,5 +1,4 @@
 using GameData;
-using Signals;
 
 namespace Players
 {
@@ -58,19 +57,6 @@ namespace Players
                 _playerModel.Damage = checkedValue;
                 InvokeOnChangeStat(EStatType.Damage, checkedValue);
             }
-        }
-
-        public void ApplyDamage(float damage)
-        {
-            damage *= (1f - 0.01f * Armor);
-
-            if (damage < 0f)
-                return;
-
-            if (damage > Hp)
-                Hp = 0f;
-            else
-                Hp -= damage;
         }
 
         private float GetCheckedValue(float value)

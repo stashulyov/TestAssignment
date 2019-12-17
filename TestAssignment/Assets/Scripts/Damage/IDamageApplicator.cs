@@ -1,7 +1,7 @@
-namespace Common
+namespace Damage
 {
     public interface IDamageApplicator
     {
-        void ApplyDamage(int attackerId, int attackedId);
+        bool ApplyDamage(int attackerId, int attackedId);
     }
 }

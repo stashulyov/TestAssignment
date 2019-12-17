@@ -1,4 +1,4 @@
-namespace Ui.StatUi
+namespace Ui
 {
     public interface IStatUiPool
     {

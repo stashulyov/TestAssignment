@@ -1,6 +1,4 @@
-using Ui;
-
-namespace ScriptableObjects
+namespace Ui
 {
     public interface IIconsDatabase
     {

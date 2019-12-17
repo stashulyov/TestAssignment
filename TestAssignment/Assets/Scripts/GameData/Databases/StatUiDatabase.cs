@@ -1,6 +1,6 @@
-using Common;
 using Core;
 using ScriptableObjects;
+using Ui;
 
 namespace GameData
 {
@@ -12,7 +12,7 @@ namespace GameData
             {
                 var type = (EStatType) data.id;
                 var icon = iconsDatabase.Get(data.icon);
-                var stat = new StatUi(type, data.title, icon);
+                var stat = new StatUi(type, icon);
 
                 Add(stat.Type, stat);
             }

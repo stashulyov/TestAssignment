@@ -1,4 +1,4 @@
-namespace Common
+namespace Ui
 {
     public interface IUiModelFactory
     {

@@ -36,7 +36,7 @@ namespace GameData
 
         public Buff GetRandomBuff()
         {
-            var random = Random.Range(0, All.Count());
+            var random = Random.Range(0, Count);
             return All.ElementAt(random).Value;
         }
     }

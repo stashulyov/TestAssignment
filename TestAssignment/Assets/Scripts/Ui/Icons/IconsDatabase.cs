@@ -1,8 +1,7 @@
-using Common;
 using Core;
-using Ui;
+using ScriptableObjects;
 
-namespace ScriptableObjects
+namespace Ui
 {
     public class IconsDatabase : ADatabase<string, Icon>, IIconsDatabase
     {

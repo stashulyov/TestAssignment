@@ -1,20 +1,23 @@
 using System;
 using GameData;
-using Players;
 
-namespace Buffs
+namespace Players
 {
     public class PlayerModelInitializer : IPlayerModelInitializer
     {
         private readonly IStatDatabase _statDatabase;
+        private readonly IPlayerModelDatabase _playerModelDatabase;
 
-        public PlayerModelInitializer(IStatDatabase statDatabase)
+        public PlayerModelInitializer(IStatDatabase statDatabase, IPlayerModelDatabase playerModelDatabase)
         {
             _statDatabase = statDatabase;
+            _playerModelDatabase = playerModelDatabase;
         }
 
-        public void InitializeModel(IPlayerModel playerModel)
+        public void InitializeModel(int playerId)
         {
+            var playerModel = _playerModelDatabase.Get(playerId);
+
             foreach (var item in _statDatabase.All)
             {
                 var stat = item.Value;

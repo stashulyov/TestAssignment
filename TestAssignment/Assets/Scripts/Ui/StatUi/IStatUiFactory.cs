@@ -1,6 +1,6 @@
 using System;
 
-namespace Ui.StatUi
+namespace Ui
 {
     public interface IStatUiFactory
     {

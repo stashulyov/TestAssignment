@@ -1,70 +1,39 @@
 using Core;
 using Players;
-using Signals;
+using Ui;
 
-namespace Common
+namespace Game
 {
-    public class GameDirector : IGameDirector, IInitializable
+    public class GameDirector : IInitializable
     {
-        private readonly MonoBehaviourServiceLocator _monoBehaviourServiceLocator;
-        private readonly IPlayerAddedBus _bus;
-
-        private readonly IPlayerModelFactory _playerModelFactory;
-        private readonly IPlayerModelDatabase _playerModelDatabase;
-        private readonly IPlayerViewDatabase _playerViewDatabase;
+        private readonly IStartButtonsProvider _startButtonsProvider;
+        private readonly IPlayerIdsProvider _playerIdsProvider;
         private readonly IGameStartedBus _gameStartedBus;
-        private readonly IPlayerStatChangedBus _playerStatChangedBus;
-        private readonly IPlayerViewFactory _playerViewFactory;
+        private readonly IPlayerBuilder _playerBuilder;
 
-        public GameDirector(MonoBehaviourServiceLocator monoBehaviourServiceLocator, IPlayerAddedBus bus, IPlayerModelFactory playerModelFactory,
-            IPlayerModelDatabase playerModelDatabase, IPlayerViewDatabase playerViewDatabase, IGameStartedBus gameStartedBus,
-            IPlayerStatChangedBus playerStatChangedBus, IPlayerViewFactory playerViewFactory)
+        public GameDirector(IStartButtonsProvider startButtonsProvider, IPlayerIdsProvider playerIdsProvider, IGameStartedBus gameStartedBus,
+            IPlayerBuilder playerBuilder)
         {
-            _monoBehaviourServiceLocator = monoBehaviourServiceLocator;
-            _bus = bus;
-            _playerModelFactory = playerModelFactory;
-            _playerModelDatabase = playerModelDatabase;
-            _playerViewDatabase = playerViewDatabase;
+            _startButtonsProvider = startButtonsProvider;
+            _playerIdsProvider = playerIdsProvider;
             _gameStartedBus = gameStartedBus;
-            _playerStatChangedBus = playerStatChangedBus;
-            _playerViewFactory = playerViewFactory;
+            _playerBuilder = playerBuilder;
         }
 
         public void Initialize()
         {
-            _monoBehaviourServiceLocator.UiObjects.PlayWithBuffsButton.onClick.AddListener(PlayWithBuffs);
-            _monoBehaviourServiceLocator.UiObjects.PlayWithoutBuffsButton.onClick.AddListener(PlayWithoutBuffs);
+            _startButtonsProvider.StartWithBuffsButton.onClick.AddListener(() => Play(true));
+            _startButtonsProvider.StartWithoutBuffsButton.onClick.AddListener(() => Play(false));
 
-            var ids = new[]
-            {
-                0, 1
-            };
+            foreach (var id in _playerIdsProvider.GetPlayerIds())
+                _playerBuilder.Build(id);
 
-            BuildModels(ids);
+            Play(false);
         }
 
-        private void PlayWithBuffs()
+        private void Play(bool buffsAreEnabled)
         {
-            _gameStartedBus.Fire(new GameStartedSignal(true));
-        }
-
-        private void PlayWithoutBuffs()
-        {
-            _gameStartedBus.Fire(new GameStartedSignal(false));
-        }
-
-        private void BuildModels(int[] ids)
-        {
-            foreach (var id in ids)
-            {
-                var playerView = _playerViewFactory.Create(id);
-                var playerModel = _playerModelFactory.Create(id);
-                var playerRichModelDecorator = new PlayerRichModelDecorator(playerModel, _playerStatChangedBus);
-
-                _playerModelDatabase.Add(id, playerRichModelDecorator);
-                _playerViewDatabase.Add(id, playerView);
-                _bus.Fire(new PlayerAddedSignal(id));
-            }
+            _gameStartedBus.Fire(new GameStartedSignal(buffsAreEnabled));
         }
     }
 }

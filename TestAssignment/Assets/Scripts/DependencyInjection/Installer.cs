@@ -1,7 +1,7 @@
 using Core;
 using UnityEngine;
 
-namespace Common
+namespace DependencyInjection
 {
     public class Installer : MonoBehaviour
     {

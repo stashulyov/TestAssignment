@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using UnityEngine;
 
-namespace Ui.StatUi
+namespace Ui
 {
     public class StatUiPresenter
     {

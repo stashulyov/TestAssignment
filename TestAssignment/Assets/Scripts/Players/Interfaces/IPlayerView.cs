@@ -5,5 +5,7 @@ namespace Players
         void SetId(int playerId);
         int GetEnemyId();
         void Attack();
+        void Spawn();
+        void Die();
     }
 }

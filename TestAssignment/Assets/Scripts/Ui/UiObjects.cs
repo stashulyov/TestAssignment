@@ -1,8 +1,8 @@
-using Ui;
+using Players;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Common
+namespace Ui
 {
     public class UiObjects : MonoBehaviour
     {

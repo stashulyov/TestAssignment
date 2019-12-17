@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Common
+namespace Players
 {
     public class PlayerPanelHierarchy : MonoBehaviour
     {

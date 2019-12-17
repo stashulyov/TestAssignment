@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ui.StatUi
+namespace Ui
 {
     public class StatUiPool : IStatUiPool
     {

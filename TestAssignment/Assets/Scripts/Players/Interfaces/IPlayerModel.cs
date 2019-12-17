@@ -8,7 +8,5 @@ namespace Players
         float Armor { get; set; }
         float Vampirism { get; set; }
         float Damage { get; set; }
-
-        void ApplyDamage(float damage);
     }
 }

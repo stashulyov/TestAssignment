@@ -1,6 +1,6 @@
 using GameData;
 
-namespace Buffs
+namespace Game
 {
     public class GameSettings : IGameSettings
     {

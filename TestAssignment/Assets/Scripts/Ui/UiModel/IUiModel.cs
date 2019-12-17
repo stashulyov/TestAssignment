@@ -1,9 +1,8 @@
 using System;
 using GameData;
-using Ui.StatUi;
 using UnityEngine.UI;
 
-namespace Common
+namespace Ui
 {
     public interface IUiModel
     {

@@ -1,4 +1,4 @@
-namespace Buffs
+namespace Game
 {
     public interface IGameSettings
     {

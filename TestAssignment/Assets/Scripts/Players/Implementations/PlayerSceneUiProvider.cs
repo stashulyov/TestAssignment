@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Common
+namespace Players
 {
-    public class PlayerSceneUiProvider : IPlayerSceneUiProvider
+    public class PlayerSceneUiProvider : IAttackButtonProvider, ITransformProvider, IPlayerIdsProvider
     {
         private readonly PlayerPanelHierarchy[] _hierarchies;
 
@@ -12,12 +12,22 @@ namespace Common
             _hierarchies = hierarchies;
         }
 
+        public int[] GetPlayerIds()
+        {
+            var ids = new int[_hierarchies.Length];
+
+            for (int i = 0; i < ids.Length; i++)
+                ids[i] = i;
+
+            return ids;
+        }
+
         public Transform GetTransform(int playerId)
         {
             return _hierarchies[playerId].statsPanel;
         }
 
-        public Button GetButton(int playerId)
+        public Button GetAttackButton(int playerId)
         {
             return _hierarchies[playerId].attackButton;
         }

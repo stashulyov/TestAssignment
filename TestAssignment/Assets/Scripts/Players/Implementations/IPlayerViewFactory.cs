@@ -1,6 +1,4 @@
-using Players;
-
-namespace Common
+namespace Players
 {
     public interface IPlayerViewFactory
     {

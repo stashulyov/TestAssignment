@@ -1,9 +1,7 @@
-using Players;
-
-namespace Buffs
+namespace Players
 {
     public interface IPlayerModelInitializer
     {
-        void InitializeModel(IPlayerModel playerModel);
+        void InitializeModel(int playerId);
     }
 }

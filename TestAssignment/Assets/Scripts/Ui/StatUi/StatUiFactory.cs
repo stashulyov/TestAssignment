@@ -2,7 +2,7 @@ using System;
 using Prefabs;
 using Object = UnityEngine.Object;
 
-namespace Ui.StatUi
+namespace Ui
 {
     public class StatUiFactory : IStatUiFactory
     {

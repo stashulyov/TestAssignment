@@ -5,6 +5,7 @@ namespace Players
     public class PlayerView : MonoBehaviour, IPlayerView, IDamageable
     {
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
+        private static readonly int HealthFloat = Animator.StringToHash("Health");
 
         public int PlayerId { get; private set; }
 
@@ -35,6 +36,16 @@ namespace Players
         public void Attack()
         {
             _animator.SetTrigger(AttackTrigger);
+        }
+
+        public void Spawn()
+        {
+            _animator.SetInteger(HealthFloat, 100);
+        }
+
+        public void Die()
+        {
+            _animator.SetInteger(HealthFloat, 0);
         }
     }
 }

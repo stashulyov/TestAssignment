@@ -13,9 +13,5 @@ namespace Players
         {
             PlayerId = playerId;
         }
-
-        public void ApplyDamage(float damage)
-        {
-        }
     }
 }

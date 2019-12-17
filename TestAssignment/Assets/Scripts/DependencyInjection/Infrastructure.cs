@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using Buffs;
+using Damage;
+using Game;
 using GameData;
 using Players;
 using Prefabs;
 using Proxies;
-using ScriptableObjects;
-using Signals;
-using Ui.StatUi;
+using Ui;
 
-namespace Common
+namespace DependencyInjection
 {
     public class Infrastructure
     {
@@ -21,50 +21,47 @@ namespace Common
         private JsonProxy _jsonProxy;
 
         private GameDataProvider _gameDataProvider;
+        private GameSettings _gameSettings;
+        private PlayerSceneUiProvider _playerSceneUiProvider;
+        private StartButtonsProvider _startButtonsProvider;
 
         private StatUiFactory _statUiFactory;
         private StatUiDatabase _statUiDatabase;
         private StatUiPool _statUiPool;
+        private StatDatabase _statDatabase;
 
-        private PlayerModelFactory _playerModelFactory;
         private PlayerModelDatabase _playerModelDatabase;
-
         private PlayerViewDatabase _playerViewDatabase;
-
-        private PlayerSceneUiProvider _playerSceneUiProvider;
+        private PlayerModelFactory _playerModelFactory;
+        private PlayerModelInitializer _playerModelInitializer;
+        private PlayerViewInitializer _playerViewInitializer;
+        private PlayerViewFactory _playerViewFactory;
 
         private UiModelFactory _uiModelFactory;
         private UiModelDatabase _uiModelDatabase;
-        private UiBuilder _uiBuilder;
 
         private BuffUiDatabase _buffUiDatabase;
+        private BuffDatabase _buffDatabase;
+        private BuffsFactory _buffsFactory;
+        private UiModelBuffsUpdateSystem _uiModelBuffsUpdateSystem;
+        private UiModelStatUpdateSystem _uiModelStatUpdateSystem;
 
         private DamageApplicator _damageApplicator;
-
-        private AttackUiModelSystem _attackUiModelSystem;
-
-        private GameDirector _gameDirector;
-        private GameController _gameController;
-
-        private PlayerModelInitializer _playerModelInitializer;
-        private BuffApplyingSystem _buffApplyingSystem;
-
-        private StatDatabase _statDatabase;
-
-        private UiModelBuffsUpdateSystem _uiModelBuffsUpdateSystem;
-
-        private GameSettings _gameSettings;
-        private BuffDatabase _buffDatabase;
+        private DamageCalculator _damageCalculator;
+        private DamageSystem _damageSystem;
+        private VampirismCalculator _vampirismCalculator;
 
         private PlayerAddedBus _playerAddedBus;
         private UiModelBuiltBus _uiModelBuiltBus;
         private GameStartedBus _gameStartedBus;
-
         private PlayerBuffsBus _playerBuffsBus;
         private PlayerStatChangedBus _playerStatChangedBus;
-        private BuffsFactory _buffsFactory;
-        private PlayerViewFactory _playerViewFactory;
-        private UiModelStatUpdateSystem _uiModelStatUpdateSystem;
+
+        private UiModelBuilder _uiModelBuilder;
+        private BuffApplyingSystem _buffApplyingSystem;
+        private GameController _gameController;
+        private PlayerBuilder _playerBuilder;
+        private GameDirector _gameDirector;
 
         public Infrastructure(MonoBehaviourServiceLocator monoBehaviourServiceLocator)
         {
@@ -73,84 +70,77 @@ namespace Common
 
         public void BuildGraph()
         {
+            // SO
             _prefabsDatabase = new PrefabsDatabase(_monoBehaviourServiceLocator.PrefabsDatabaseAsset);
             _iconsDatabase = new IconsDatabase(_monoBehaviourServiceLocator.IconsDatabaseAsset);
 
+            // Proxies
             _resourcesProxy = new ResourcesProxy();
             _jsonProxy = new JsonProxy();
 
+            // Game
             _gameDataProvider = new GameDataProvider(_resourcesProxy, _jsonProxy);
+            _gameSettings = new GameSettings(_gameDataProvider);
+            _playerSceneUiProvider = new PlayerSceneUiProvider(_monoBehaviourServiceLocator.UiObjects.Hierarchies);
+            _startButtonsProvider = new StartButtonsProvider(_monoBehaviourServiceLocator.UiObjects);
 
+            // Stat
+            _statDatabase = new StatDatabase(_gameDataProvider);
             _statUiFactory = new StatUiFactory(_prefabsDatabase);
             _statUiDatabase = new StatUiDatabase(_gameDataProvider, _iconsDatabase);
             _statUiPool = new StatUiPool(_statUiFactory);
 
+            // Player
             _playerModelFactory = new PlayerModelFactory();
             _playerModelDatabase = new PlayerModelDatabase();
-
             _playerViewDatabase = new PlayerViewDatabase();
+            _playerModelInitializer = new PlayerModelInitializer(_statDatabase, _playerModelDatabase);
+            _playerViewInitializer = new PlayerViewInitializer(_playerViewDatabase);
+            _playerViewFactory = new PlayerViewFactory(_monoBehaviourServiceLocator.UiObjects.Hierarchies);
 
-            _playerSceneUiProvider = new PlayerSceneUiProvider(_monoBehaviourServiceLocator.UiObjects.Hierarchies);
-
+            // Ui
             _uiModelFactory = new UiModelFactory();
             _uiModelDatabase = new UiModelDatabase();
 
-            _damageApplicator = new DamageApplicator(_playerModelDatabase);
-
+            // Buffs
+            _buffDatabase = new BuffDatabase(_gameDataProvider);
+            _buffsFactory = new BuffsFactory(_gameSettings, _buffDatabase);
             _buffUiDatabase = new BuffUiDatabase(_gameDataProvider, _iconsDatabase);
-
-            _attackUiModelSystem = new AttackUiModelSystem(_uiModelDatabase, _playerViewDatabase, _damageApplicator);
             _uiModelBuffsUpdateSystem = new UiModelBuffsUpdateSystem(_uiModelDatabase, _buffUiDatabase, _statUiPool, _playerSceneUiProvider);
             _uiModelStatUpdateSystem = new UiModelStatUpdateSystem(_uiModelDatabase);
 
-            _uiModelBuiltBus = new UiModelBuiltBus(new List<IUiModelBuiltListener>()
-            {
-                _attackUiModelSystem
-            });
+            // Damage
+            _damageCalculator = new DamageCalculator();
+            _vampirismCalculator = new VampirismCalculator();
+            _damageApplicator = new DamageApplicator(_playerModelDatabase, _damageCalculator, _vampirismCalculator);
+            _damageSystem = new DamageSystem(_uiModelDatabase, _playerViewDatabase, _damageApplicator);
 
-            _uiBuilder = new UiBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiPool, _playerSceneUiProvider, _uiModelBuiltBus);
+            var uiModelBuiltListeners = new List<IUiModelBuiltListener> {_damageSystem};
+            _uiModelBuiltBus = new UiModelBuiltBus(uiModelBuiltListeners);
 
-            _playerAddedBus = new PlayerAddedBus(new List<IPlayerAddedListener>()
-            {
-                _uiBuilder
-            });
+            _uiModelBuilder = new UiModelBuilder(_uiModelFactory, _uiModelDatabase, _statUiDatabase, _statUiPool, _playerSceneUiProvider, 
+                _playerSceneUiProvider, _uiModelBuiltBus);
 
-            _statDatabase = new StatDatabase(_gameDataProvider);
+            var playerBuffsAttachedListeners = new List<IPlayerBuffsAttachedListener> {_uiModelBuffsUpdateSystem};
+            var playerBuffsDetachedListeners = new List<IPlayerBuffsDetachedListener> {_uiModelBuffsUpdateSystem};
+            _playerBuffsBus = new PlayerBuffsBus(playerBuffsAttachedListeners, playerBuffsDetachedListeners);
 
-            _gameSettings = new GameSettings(_gameDataProvider);
+            var playerStatChangedListeners = new List<IPlayerStatChangedListener> {_uiModelStatUpdateSystem};
+            _playerStatChangedBus = new PlayerStatChangedBus(playerStatChangedListeners);
 
-            _buffDatabase = new BuffDatabase(_gameDataProvider);
+            var playerAddedListeners = new List<IPlayerAddedListener> {_uiModelBuilder};
+            _playerAddedBus = new PlayerAddedBus(playerAddedListeners);
 
-            _playerBuffsBus = new PlayerBuffsBus(new List<IPlayerBuffsAttachedListener>()
-            {
-                _uiModelBuffsUpdateSystem
-            }, new List<IPlayerBuffsDetachedListener>()
-            {
-                _uiModelBuffsUpdateSystem,
-            });
+            _buffApplyingSystem = new BuffApplyingSystem(_buffsFactory, _playerBuffsBus, _playerModelDatabase);
+            _gameController = new GameController(_playerModelInitializer, _playerViewInitializer, _playerModelDatabase, _buffApplyingSystem);
 
-            _playerModelInitializer = new PlayerModelInitializer(_statDatabase);
+            var gameStartedListeners = new List<IGameStartedListener> {_gameController};
+            _gameStartedBus = new GameStartedBus(gameStartedListeners);
+            
+            _playerBuilder = new PlayerBuilder(_playerModelFactory, _playerViewFactory,_playerStatChangedBus, _playerModelDatabase, _playerViewDatabase, 
+                _playerAddedBus);
 
-            _buffsFactory = new BuffsFactory(_gameSettings, _buffDatabase);
-
-            _buffApplyingSystem = new BuffApplyingSystem(_buffsFactory, _playerBuffsBus);
-
-            _gameController = new GameController(_playerModelInitializer, _playerModelDatabase, _buffApplyingSystem);
-
-            _gameStartedBus = new GameStartedBus(new List<IGameStartedListener>()
-            {
-                _gameController
-            });
-
-            _playerStatChangedBus = new PlayerStatChangedBus(new List<IPlayerStatChangedListener>()
-            {
-                _uiModelStatUpdateSystem
-            });
-
-            _playerViewFactory = new PlayerViewFactory(_monoBehaviourServiceLocator.UiObjects.Hierarchies);
-
-            _gameDirector = new GameDirector(_monoBehaviourServiceLocator, _playerAddedBus, _playerModelFactory, _playerModelDatabase, _playerViewDatabase,
-                _gameStartedBus, _playerStatChangedBus, _playerViewFactory);
+            _gameDirector = new GameDirector(_startButtonsProvider, _playerSceneUiProvider, _gameStartedBus, _playerBuilder);
         }
     }
 }

@@ -1,6 +1,6 @@
-using Common;
 using Core;
 using ScriptableObjects;
+using Ui;
 
 namespace GameData
 {
@@ -12,8 +12,8 @@ namespace GameData
             {
                 var type = (EBuffType) data.id;
                 var icon = iconsDatabase.Get(data.icon);
-                var buffUi = new BuffUi(type, data.title, icon);
-                
+                var buffUi = new BuffUi(data.title, icon);
+
                 Add(type, buffUi);
             }
         }

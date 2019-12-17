@@ -1,10 +1,8 @@
-using Players;
-
 namespace Buffs
 {
     public interface IBuffApplyingSystem
     {
-        void ApplyBuffs(IPlayerModel playerModel);
-        void ClearBuffs(IPlayerModel playerModel);
+        void ApplyBuffs(int playerId);
+        void ClearBuffs(int playerId);
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Ui.StatUi
+namespace Ui
 {
     public class StatUiView : MonoBehaviour
     {

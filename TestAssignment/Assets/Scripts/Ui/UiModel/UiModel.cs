@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using GameData;
-using Ui.StatUi;
 using UnityEngine.UI;
 
-namespace Common
+namespace Ui
 {
     public class UiModel : IUiModel
     {

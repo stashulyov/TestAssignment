@@ -1,7 +1,8 @@
 using ScriptableObjects;
+using Ui;
 using UnityEngine;
 
-namespace Common
+namespace DependencyInjection
 {
     public class MonoBehaviourServiceLocator : MonoBehaviour
     {
